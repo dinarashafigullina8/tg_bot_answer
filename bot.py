@@ -4,6 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import IsReplyFilter
 import send_mail
+
 load_dotenv(find_dotenv())
 logging.basicConfig(level=logging.INFO)
 
@@ -14,6 +15,7 @@ dp = Dispatcher(bot)
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup_2 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("❓ Задать вопрос")
     markup.add(btn1)
     await bot.send_message(message.chat.id,
@@ -38,8 +40,8 @@ async def ask_question(message: types.Message):
         send_mail.main()
         await bot.send_message(message.chat.id, text="Ваш вопрос обрабатывается оператором. Ожидайте ответа")
         await bot.send_message(int(os.getenv('chat_id_operators')), text='Пришел новый вопрос от '
-                                                    'пользователя {0.first_name}:'.format(message.from_user) + '\n\n'
-                                                    + message.text)
+                                                                         'пользователя @{0.username}:'.format(
+            message.from_user) + '\n\n' + message.text)
 
 
 if __name__ == '__main__':
